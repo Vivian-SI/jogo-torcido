@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1736296891 source:c:\users\alpha tech\sfml;cb\studying_interface\main.cpp
+1736385351 source:c:\users\alpha tech\sfml;cb\studying_interface\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
 

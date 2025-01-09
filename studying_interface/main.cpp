@@ -18,8 +18,9 @@ int main() {
     sf::Sprite backgroundSprite;
     backgroundSprite.setTexture(backgroundTexture);
 
-    /// Coordenadas para o botão "Jogar"
+    /// Coordenadas para os botões
     sf::FloatRect botaoJogar(165, 175, 229, 63);
+    sf::FloatRect botaoAjuda(165, 262, 214, 52);
 
     /// Loop principal da tela inicial
     while (window.isOpen()) {
@@ -69,6 +70,43 @@ int main() {
                             gameWindow.clear();
                             gameWindow.draw(gameBackgroundSprite);
                             gameWindow.display();
+                        }
+                    }
+
+                    /// Verifica se o clique foi na área do botão "Ajuda"
+                    else if (botaoAjuda.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                        cout << "Ajuda! Aqui estão as instruções." << endl;
+
+                        /// Fecha a janela inicial
+                        window.close();
+
+                        /// Cria uma nova janela para a ajuda
+                        sf::RenderWindow helpWindow(sf::VideoMode(512, 512), "Ajuda!");
+
+                        /// Textura de fundo para a tela de ajuda
+                        sf::Texture helpBackgroundTexture;
+                        if (!helpBackgroundTexture.loadFromFile("ajuda.bmp")) {
+                            cout << "Erro ao carregar a imagem de fundo da ajuda!" << endl;
+                            return -1;
+                        }
+
+                        /// Sprite para o fundo da ajuda
+                        sf::Sprite helpBackgroundSprite;
+                        helpBackgroundSprite.setTexture(helpBackgroundTexture);
+
+                        /// Loop principal para a tela da ajuda
+                        while (helpWindow.isOpen()) {
+                            sf::Event helpEvent;
+                            while (helpWindow.pollEvent(helpEvent)) {
+                                /// Fecha a janela quando clicar no "X"
+                                if (helpEvent.type == sf::Event::Closed)
+                                    helpWindow.close();
+                            }
+
+                            /// Limpa e desenha a tela de ajuda
+                            helpWindow.clear();
+                            helpWindow.draw(helpBackgroundSprite);
+                            helpWindow.display();
                         }
                     }
                 }
