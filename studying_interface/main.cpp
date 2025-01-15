@@ -1,17 +1,60 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <locale>
 
 using namespace std;
 
-int main() {
-    /// Tela inicial
-    sf::RenderWindow window(sf::VideoMode(512, 512), "Jogo Torcido");
+void TelaInicial(sf::RenderWindow &window);
 
+void TelaAjuda(sf::RenderWindow &window) {
+    /// Textura de fundo para a tela de ajuda
+    sf::Texture helpBackgroundTexture;
+    if (!helpBackgroundTexture.loadFromFile("ajuda.bmp")) {
+        cout << "Erro ao carregar a imagem de fundo da ajuda!" << endl;
+        return;
+    }
+
+    /// Sprite para o fundo da ajuda
+    sf::Sprite helpBackgroundSprite;
+    helpBackgroundSprite.setTexture(helpBackgroundTexture);
+
+    /// Coordenadas do botão "Voltar"
+    sf::FloatRect botaoVoltar(344, 454, 144, 37);
+
+    /// Loop principal para a tela da ajuda
+    while (window.isOpen()) {
+        sf::Event helpEvent;
+        while (window.pollEvent(helpEvent)) {
+            if (helpEvent.type == sf::Event::Closed)
+                window.close();
+
+            /// Detecta clique do mouse
+            if (helpEvent.type == sf::Event::MouseButtonPressed) {
+                if (helpEvent.mouseButton.button == sf::Mouse::Left) {
+                    /// Coordenadas do clique do mouse
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+                    /// Verifica se o clique foi na área do botão "Voltar"
+                    if (botaoVoltar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                        cout << "Voltando para a tela inicial..." << endl;
+                        return; /// Sai da tela de ajuda para voltar à inicial
+                    }
+                }
+            }
+        }
+
+        window.clear();
+        window.draw(helpBackgroundSprite);
+        window.display();
+    }
+}
+
+void TelaInicial(sf::RenderWindow &window) {
     /// Textura da tela inicial
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("abertura.bmp")) {
         cout << "Erro ao carregar a imagem de fundo!" << endl;
-        return -1;
+        return;
     }
 
     /// Sprite para o fundo da tela inicial
@@ -27,8 +70,10 @@ int main() {
         sf::Event event;
         while (window.pollEvent(event)) {
             /// Fecha a janela quando clicar no "X"
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed) {
                 window.close();
+                return;
+            }
 
             /// Detecta clique do mouse
             if (event.type == sf::Event::MouseButtonPressed) {
@@ -39,9 +84,7 @@ int main() {
                     /// Verifica se o clique foi na área do botão "Jogar"
                     if (botaoJogar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
                         cout << "Jogar! Vamos começar o jogo!" << endl;
-
-                        /// Fecha a janela inicial
-                        window.close();
+                        window.close(); /// Fecha a tela inicial
 
                         /// Cria uma nova janela para o jogo
                         sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Jogando...");
@@ -50,7 +93,7 @@ int main() {
                         sf::Texture gameBackgroundTexture;
                         if (!gameBackgroundTexture.loadFromFile("fundo8.bmp")) {
                             cout << "Erro ao carregar a imagem de fundo do jogo!" << endl;
-                            return -1;
+                            return;
                         }
 
                         /// Sprite para o fundo do jogo
@@ -61,12 +104,10 @@ int main() {
                         while (gameWindow.isOpen()) {
                             sf::Event gameEvent;
                             while (gameWindow.pollEvent(gameEvent)) {
-                                /// Fecha a janela quando clicar no "X"
                                 if (gameEvent.type == sf::Event::Closed)
                                     gameWindow.close();
                             }
 
-                            /// Limpa e desenha o fundo da janela do jogo
                             gameWindow.clear();
                             gameWindow.draw(gameBackgroundSprite);
                             gameWindow.display();
@@ -75,49 +116,25 @@ int main() {
 
                     /// Verifica se o clique foi na área do botão "Ajuda"
                     else if (botaoAjuda.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
-                        cout << "Ajuda! Aqui estão as instruções." << endl;
-
-                        /// Fecha a janela inicial
-                        window.close();
-
-                        /// Cria uma nova janela para a ajuda
-                        sf::RenderWindow helpWindow(sf::VideoMode(512, 512), "Ajuda!");
-
-                        /// Textura de fundo para a tela de ajuda
-                        sf::Texture helpBackgroundTexture;
-                        if (!helpBackgroundTexture.loadFromFile("ajuda.bmp")) {
-                            cout << "Erro ao carregar a imagem de fundo da ajuda!" << endl;
-                            return -1;
-                        }
-
-                        /// Sprite para o fundo da ajuda
-                        sf::Sprite helpBackgroundSprite;
-                        helpBackgroundSprite.setTexture(helpBackgroundTexture);
-
-                        /// Loop principal para a tela da ajuda
-                        while (helpWindow.isOpen()) {
-                            sf::Event helpEvent;
-                            while (helpWindow.pollEvent(helpEvent)) {
-                                /// Fecha a janela quando clicar no "X"
-                                if (helpEvent.type == sf::Event::Closed)
-                                    helpWindow.close();
-                            }
-
-                            /// Limpa e desenha a tela de ajuda
-                            helpWindow.clear();
-                            helpWindow.draw(helpBackgroundSprite);
-                            helpWindow.display();
-                        }
+                        cout << "Abrindo tela de ajuda..." << endl;
+                        TelaAjuda(window); /// Chama a tela de ajuda
                     }
                 }
             }
         }
 
-        /// Limpa e desenha o fundo da janela inicial
         window.clear();
         window.draw(backgroundSprite);
         window.display();
     }
+}
+
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+
+    /// Tela inicial
+    sf::RenderWindow window(sf::VideoMode(512, 512), "Jogo Torcido");
+    TelaInicial(window);
 
     return 0;
 }
