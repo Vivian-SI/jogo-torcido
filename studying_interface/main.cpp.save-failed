@@ -1,0 +1,130 @@
+#include <SFML/Graphics.hpp>
+#include <iostream>
+#include <locale>
+
+using namespace std;
+
+void TelaInicial(sf::RenderWindow &window);
+
+void TelaAjuda(sf::RenderWindow &window) {
+    sf::Texture helpBackgroundTexture;
+    if (!helpBackgroundTexture.loadFromFile("ajuda.bmp")) {
+        cout << "Erro ao carregar a imagem de fundo da ajuda!" << endl;
+        return;
+    }
+
+    sf::Sprite helpBackgroundSprite;
+    helpBackgroundSprite.setTexture(helpBackgroundTexture);
+
+    sf::FloatRect botaoVoltar(344, 454, 144, 37);
+    sf::Cursor cursor;
+    bool cursorMao = false;
+
+    while (window.isOpen()) {
+        sf::Event helpEvent;
+        while (window.pollEvent(helpEvent)) {
+            if (helpEvent.type == sf::Event::Closed)
+                window.close();
+
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+            if (botaoVoltar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                if (!cursorMao) {
+                    cursor.loadFromSystem(sf::Cursor::Hand);
+                    window.setMouseCursor(cursor);
+                    cursorMao = true;
+                }
+                if (helpEvent.type == sf::Event::MouseButtonPressed && helpEvent.mouseButton.button == sf::Mouse::Left) {
+                    cout << "Voltando para a tela inicial..." << endl;
+                    return;
+                }
+            } else {
+                if (cursorMao) {
+                    cursor.loadFromSystem(sf::Cursor::Arrow);
+                    window.setMouseCursor(cursor);
+                    cursorMao = false;
+                }
+            }
+        }
+
+        window.clear();
+        window.draw(helpBackgroundSprite);
+        window.display();
+    }
+}
+
+void TelaInicial(sf::RenderWindow &window) {
+    sf::Texture backgroundTexture;
+    if (!backgroundTexture.loadFromFile("abertura.bmp")) {
+        cout << "Erro ao carregar a imagem de fundo!" << endl;
+        return;
+    }
+
+    sf::Sprite backgroundSprite;
+    backgroundSprite.setTexture(backgroundTexture);
+
+    sf::FloatRect botaoJogar(165, 175, 229, 63);
+    sf::FloatRect botaoAjuda(165, 262, 214, 52);
+
+    sf::Cursor cursor;
+    bool cursorMao = false;
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+                return;
+            }
+
+            sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+
+            if (botaoJogar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y)) ||
+                botaoAjuda.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                if (!cursorMao) {
+                    cursor.loadFromSystem(sf::Cursor::Hand);
+                    window.setMouseCursor(cursor);
+                    cursorMao = true;
+                }
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    if (botaoJogar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                        cout << "Jogar! Vamos começar o jogo!" << endl;
+                        window.close();
+                        sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Jogando...");
+                        while (gameWindow.isOpen()) {
+                            sf::Event gameEvent;
+                            while (gameWindow.pollEvent(gameEvent)) {
+                                if (gameEvent.type == sf::Event::Closed)
+                                    gameWindow.close();
+                            }
+                            gameWindow.clear();
+                            gameWindow.display();
+                        }
+                    } else if (botaoAjuda.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                        cout << "Abrindo tela de ajuda..." << endl;
+                        TelaAjuda(window);
+                    }
+                }
+            } else {
+                if (cursorMao) {
+                    cursor.loadFromSystem(sf::Cursor::Arrow);
+                    window.setMouseCursor(cursor);
+                    cursorMao = false;
+                }
+            }
+        }
+
+        window.clear();
+        window.draw(backgroundSprite);
+        window.display();
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Portuguese");
+
+    sf::RenderWindow window(sf::VideoMode(512, 512), "Jogo Torcido");
+    TelaInicial(window);
+
+    return 0;
+}

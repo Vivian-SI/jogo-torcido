@@ -83,22 +83,22 @@ void TelaInicial(sf::RenderWindow &window) {
 
                     /// Verifica se o clique foi na área do botão "Jogar"
                     if (botaoJogar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
-                        cout << "Jogar! Vamos começar o jogo!" << endl;
+                        cout << "Jogar! Escolha a linguagem para começar o jogo!" << endl;
                         window.close(); /// Fecha a tela inicial
 
-                        /// Cria uma nova janela para o jogo
-                        sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Jogando...");
+                        /// Cria uma nova janela para a escolha da linguagem do jogo
+                        sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Escolha!");
 
                         /// Textura de fundo para a tela do jogo
                         sf::Texture gameBackgroundTexture;
-                        if (!gameBackgroundTexture.loadFromFile("fundo8.bmp")) {
+                        if (!gameBackgroundTexture.loadFromFile("escolha.bmp")) {
                             cout << "Erro ao carregar a imagem de fundo do jogo!" << endl;
                             return;
                         }
 
                         /// Sprite para o fundo do jogo
-                        sf::Sprite gameBackgroundSprite;
-                        gameBackgroundSprite.setTexture(gameBackgroundTexture);
+                        sf::Sprite choiceBackgroundSprite;
+                        choiceBackgroundSprite.setTexture(gameBackgroundTexture);
 
                         /// Loop principal da tela do jogo
                         while (gameWindow.isOpen()) {
@@ -109,7 +109,7 @@ void TelaInicial(sf::RenderWindow &window) {
                             }
 
                             gameWindow.clear();
-                            gameWindow.draw(gameBackgroundSprite);
+                            gameWindow.draw(choiceBackgroundSprite);
                             gameWindow.display();
                         }
                     }
@@ -128,6 +128,8 @@ void TelaInicial(sf::RenderWindow &window) {
         window.display();
     }
 }
+
+
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
