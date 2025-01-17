@@ -1,8 +1,15 @@
 # depslib dependency file v1.0
-1736987411 source:c:\users\alpha tech\sfml;cb\studying_interface\main.cpp
+1737119749 source:c:\users\alpha tech\sfml;cb\studying_interface\main.cpp
 	<SFML/Graphics.hpp>
 	<iostream>
+	<string>
+	<fstream>
+	<string.h>
+	<ctime>
+	<algorithm>
+	<random>
 	<locale>
+	<thread>
 
 1735830878 c:\sfml-codeblocks\sfml-2.5.0\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
