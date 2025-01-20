@@ -40,7 +40,7 @@ void embaralhar(TLista &lista, int num, string &palavra);
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 void TelaInicial(sf::RenderWindow &window);
-
+//-------------------------------------------------------------
 void TelaAjuda(sf::RenderWindow &window) {
     /// Textura de fundo para a tela de ajuda
     sf::Texture helpBackgroundTexture;
@@ -84,6 +84,19 @@ void TelaAjuda(sf::RenderWindow &window) {
     }
 }
 
+void jogoPort(sf::RenderWindow &window){
+///Textura
+sf::Texture gamebackgroundTexture;
+if(! gamebackgroundTexture.loadFromFile("fundo8.bmp")){
+    cout<<"Erro ao carregar a imagem de fundo do jogo"<<endl;
+    return;
+}
+
+///Sprite do fundo
+sf::Sprite gamebackgroundSprite;
+gamebackgroundSprite.setTexture(gamebackgroundTexture);
+}
+//-------------------------------------------------------------------------------------------------------------------------
 void TelaInicial(sf::RenderWindow &window) {
     /// Textura da tela inicial
     sf::Texture backgroundTexture;
@@ -157,16 +170,18 @@ void TelaInicial(sf::RenderWindow &window) {
                                             if(botaoJogarP.contains(static_cast<float>(mousePosition.x),static_cast<float>(mousePosition.y))){
                                                 cout<<"Idioma selecionado: Português!"<<endl;
 
-                                                ///idiomaPort(FUNÇÃO)/////////////////////////
                                                 choiceWindow.close();
+                                                ///idiomaPort(FUNÇÃO)/////////////////////////
+
                                             }
                                             ///verifica se foi em ingles
                                             else if(botaoJogarI.contains(static_cast<float>(mousePosition.x),static_cast<float>(mousePosition.y))){
                                                 cout<<"Idioma selecionado: Inglês!"<<endl;
 
+                                            choiceWindow.close();
                                             ///logica jogo ingles(funcao)
 
-                                            choiceWindow.close();
+
                                             }
                                         }
                                     }
@@ -193,7 +208,7 @@ void TelaInicial(sf::RenderWindow &window) {
     }
 }
 
-
+//----------------------------------------------------------------------------------------------
 int main() {
     setlocale(LC_ALL, "Portuguese");
 

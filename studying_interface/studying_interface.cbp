@@ -39,6 +39,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
 			<Add directory="C:/SFML-CodeBlocks/SFML-2.5.0/include" />
 		</Compiler>
 		<Linker>
