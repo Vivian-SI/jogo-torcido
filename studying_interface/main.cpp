@@ -83,19 +83,38 @@ void TelaAjuda(sf::RenderWindow &window) {
         window.display();
     }
 }
+void janelaJogo(sf::RenderWindow &window) {
+    sf::Texture gameBackgroundTexture;
+    if (!gameBackgroundTexture.loadFromFile("fundo8.bmp")) {
+        cout << "Erro ao carregar a janela de fundo do jogo" << endl;
+        return;
+    }
 
-void jogoPort(sf::RenderWindow &window){
-///Textura
-sf::Texture gamebackgroundTexture;
-if(! gamebackgroundTexture.loadFromFile("fundo8.bmp")){
-    cout<<"Erro ao carregar a imagem de fundo do jogo"<<endl;
-    return;
+    sf::Sprite gameBackgroundSprite;
+    gameBackgroundSprite.setTexture(gameBackgroundTexture);
+
+    while (window.isOpen()) {
+        sf::Event gameEvent;
+        while (window.pollEvent(gameEvent)) {
+            if (gameEvent.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // Atualização da janela (renderização)
+        window.clear();
+        window.draw(gameBackgroundSprite);
+        window.display();
+    }
 }
 
-///Sprite do fundo
-sf::Sprite gamebackgroundSprite;
-gamebackgroundSprite.setTexture(gamebackgroundTexture);
+void jogoPort(sf::RenderWindow &window) {
+    // Cria uma nova janela para o jogo
+    sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Jogo - Português");
+    janelaJogo(gameWindow);
+
 }
+
+
 //-------------------------------------------------------------------------------------------------------------------------
 void TelaInicial(sf::RenderWindow &window) {
     /// Textura da tela inicial
@@ -171,6 +190,7 @@ void TelaInicial(sf::RenderWindow &window) {
                                                 cout<<"Idioma selecionado: Português!"<<endl;
 
                                                 choiceWindow.close();
+                                                    jogoPort(window);
                                                 ///idiomaPort(FUNÇÃO)/////////////////////////
 
                                             }
