@@ -26,7 +26,6 @@ typedef struct {
     Apontador ultimo;
 } TLista;
 
-
 using namespace std;
 
 void cria(TLista &lista);
@@ -40,6 +39,10 @@ void embaralhar(TLista &lista, int num, string &palavra);
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 void TelaInicial(sf::RenderWindow &window);
+void logicaJogo(TLista &lista, const string &idioma, sf::RenderWindow &window);
+
+
+
 //-------------------------------------------------------------
 void TelaAjuda(sf::RenderWindow &window) {
     /// Textura de fundo para a tela de ajuda
@@ -83,39 +86,49 @@ void TelaAjuda(sf::RenderWindow &window) {
         window.display();
     }
 }
-void janelaJogo(sf::RenderWindow &window) {
-    sf::Texture gameBackgroundTexture;
-    if (!gameBackgroundTexture.loadFromFile("fundo8.bmp")) {
-        cout << "Erro ao carregar a janela de fundo do jogo" << endl;
+
+void jogo(sf::RenderWindow &window, const string &idioma) {
+    TLista lista;
+    cria(lista);
+
+    if (idioma == "Portugues") {
+        alfabetoPortu(lista);
+    } else {
+        alfabetoIngles(lista);
+    }
+
+    logicaJogo(lista, idioma, window);
+}
+void telaJogo(sf::RenderWindow &window, const string &idioma) {
+
+
+    /// texturas, lógica específica e comportamento dependendo do idioma
+    sf::Texture gamingBackgroundTexture;
+    if (!gamingBackgroundTexture.loadFromFile("fundo8.bmp")) {
+        cout << "Erro ao carregar a janela de jogo!" << endl;
         return;
     }
 
-    sf::Sprite gameBackgroundSprite;
-    gameBackgroundSprite.setTexture(gameBackgroundTexture);
+    sf::Sprite gamingBackgroundSprite;
+    gamingBackgroundSprite.setTexture(gamingBackgroundTexture);
+
+    /// Lógica do jogo pode variar dependendo do idioma
+    cout << "Idioma selecionado: " << idioma << endl;
 
     while (window.isOpen()) {
-        sf::Event gameEvent;
-        while (window.pollEvent(gameEvent)) {
-            if (gameEvent.type == sf::Event::Closed)
+        sf::Event gamingEvent;
+        while (window.pollEvent(gamingEvent)) {
+            if (gamingEvent.type == sf::Event::Closed)
                 window.close();
         }
-
-        // Atualização da janela (renderização)
         window.clear();
-        window.draw(gameBackgroundSprite);
+        window.draw(gamingBackgroundSprite);
         window.display();
     }
 }
 
-void jogoPort(sf::RenderWindow &window) {
-    // Cria uma nova janela para o jogo
-    sf::RenderWindow gameWindow(sf::VideoMode(512, 512), "Jogo - Português");
-    janelaJogo(gameWindow);
-
-}
 
 
-//-------------------------------------------------------------------------------------------------------------------------
 void TelaInicial(sf::RenderWindow &window) {
     /// Textura da tela inicial
     sf::Texture backgroundTexture;
@@ -131,7 +144,7 @@ void TelaInicial(sf::RenderWindow &window) {
     /// Coordenadas para os botões
     sf::FloatRect botaoJogar(165, 175, 229, 63);
     sf::FloatRect botaoAjuda(165, 262, 214, 52);
-
+    sf::FloatRect botaoSair(165, 336, 170, 56);
 
     /// Loop principal da tela inicial
     while (window.isOpen()) {
@@ -152,7 +165,6 @@ void TelaInicial(sf::RenderWindow &window) {
                     /// Verifica se o clique foi na área do botão "Jogar"
                     if (botaoJogar.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
                         cout << "Jogar! Escolha a linguagem para começar o jogo!" << endl;
-                        window.close(); /// Fecha a tela inicial
 
                         /// Cria uma nova janela para a escolha da linguagem do jogo
                         sf::RenderWindow choiceWindow(sf::VideoMode(512, 512), "Escolha!");
@@ -168,43 +180,37 @@ void TelaInicial(sf::RenderWindow &window) {
                         sf::Sprite choiceBackgroundSprite;
                         choiceBackgroundSprite.setTexture(choiceBackgroundTexture);
 
-                        ///coordenadas dos botoes de linguagem
+                        /// Coordenadas dos botões de linguagem
                         sf::FloatRect botaoJogarP(110, 194, 304, 68);
                         sf::FloatRect botaoJogarI(110, 295, 215, 70);
 
                         /// Loop principal da tela de escolha
                         while (choiceWindow.isOpen()) {
-                            sf::Event choiceevent;
-                            while (choiceWindow.pollEvent(choiceevent)) {
-                                if (choiceevent.type == sf::Event::Closed)
+                            sf::Event choiceEvent;
+                            while (choiceWindow.pollEvent(choiceEvent)) {
+                                if (choiceEvent.type == sf::Event::Closed)
                                     choiceWindow.close();
 
-                                    ///Detectar o clique do mouse
-                                    if(choiceevent.type == sf::Event::MouseButtonPressed){
-                                        if(choiceevent.mouseButton.button == sf::Mouse::Left){
-                                            ///cooordenadas do clique do mouse
-                                            sf::Vector2i mousePosition = sf::Mouse::getPosition(choiceWindow);
-                                            ///verifica se foi em 'portugues'
+                                /// Detectar o clique do mouse
+                                if (choiceEvent.type == sf::Event::MouseButtonPressed) {
+                                    if (choiceEvent.mouseButton.button == sf::Mouse::Left) {
+                                        /// Coordenadas do clique do mouse
+                                        sf::Vector2i mousePosition = sf::Mouse::getPosition(choiceWindow);
+                                        /// Verifica se foi em 'portugues'
 
-                                            if(botaoJogarP.contains(static_cast<float>(mousePosition.x),static_cast<float>(mousePosition.y))){
-                                                cout<<"Idioma selecionado: Português!"<<endl;
-
-                                                choiceWindow.close();
-                                                    jogoPort(window);
-                                                ///idiomaPort(FUNÇÃO)/////////////////////////
-
-                                            }
-                                            ///verifica se foi em ingles
-                                            else if(botaoJogarI.contains(static_cast<float>(mousePosition.x),static_cast<float>(mousePosition.y))){
-                                                cout<<"Idioma selecionado: Inglês!"<<endl;
-
+                                        if (botaoJogarP.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                                            cout << "Idioma selecionado: Português!" << endl;
                                             choiceWindow.close();
-                                            ///logica jogo ingles(funcao)
-
-
-                                            }
+                                            telaJogo(window,"Portugues");
+                                        }
+                                        /// Verifica se foi em ingles
+                                        else if (botaoJogarI.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                                            cout << "Idioma selecionado: Inglês!" << endl;
+                                            choiceWindow.close();
+                                            telaJogo(window,"Ingles");
                                         }
                                     }
+                                }
                             }
 
                             choiceWindow.clear();
@@ -217,6 +223,10 @@ void TelaInicial(sf::RenderWindow &window) {
                     else if (botaoAjuda.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
                         cout << "Abrindo tela de ajuda..." << endl;
                         TelaAjuda(window); /// Chama a tela de ajuda
+                    } else if (botaoSair.contains(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y))) {
+                        cout << "Saindo..." << endl;
+                        window.close();
+                        exit(0);
                     }
                 }
             }
@@ -228,7 +238,25 @@ void TelaInicial(sf::RenderWindow &window) {
     }
 }
 
-//----------------------------------------------------------------------------------------------
+void logicaJogo(TLista &lista, const string &idioma, sf::RenderWindow &window) {
+    string aux;
+    int numero = 0;
+    string continuar;
+
+    numero = std::rand() % ((idioma == "Portugues") ? 124 : 433) + 1;
+
+    while (continuar != "N" && continuar != "n") {
+        embaralhar(lista, numero, aux);
+        comparar(lista, aux);
+        numero = std::rand() % ((idioma == "Portugues") ? 124 : 433) + 1;
+
+        cout << "Deseja continuar? (S/N): ";
+        cin >> continuar;
+    }
+
+    imprimeLista(lista);
+}
+
 int main() {
     setlocale(LC_ALL, "Portuguese");
 
@@ -236,48 +264,7 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(512, 512), "Jogo Torcido");
     TelaInicial(window);
 
-    std::srand(std::time(0));
-
-    TLista lista;
-    cria(lista);
-    Tinfo item;
-
-    string palavra;
-    escolha(palavra);
-    string aux = "";
-    int numero = 0;
-
-    if(palavra == "Portugues" || palavra == "p"){
-        alfabetoPortu(lista);
-        numero = std::rand() % 124 + 1;
-
-    } else {
-        alfabetoIngles(lista);
-        numero = std::rand() % 433 + 1;
-    }
-
-    string continuar = "";
-    while(continuar != "N" || continuar != "n"){
-        embaralhar(lista, numero, aux);
-        comparar(lista, aux);
-        numero = std::rand() % 124 + 1;
-
-        cout << "Deseja continuar?";
-        cin >> continuar;
-        system("cls");
-    }
-
-
-
-
-    imprimeLista(lista);
-
     return 0;
-}
-
-void escolha(string &palavra){
-    cout << "Informe sua escolha:";
-    cin >> palavra;
 }
 
 void cria(TLista &lista) {
@@ -290,90 +277,82 @@ void comparar(TLista lista, string palavra) {
     string digitar;
     int pontos = 0;
 
-    cout << "Palavra embaralhada: " << palavra << endl;
-    while (pontos < 5) {
-        cout << "Digite uma palavra: ";
-        cin >> digitar;
+    cout << "Digite a palavra exibida: ";
+    cin >> digitar;
 
-        Apontador atual = lista.primeiro->proximo;
-        while (atual != nullptr) {
-            if (digitar == atual->item.palavra) {
-                pontos++;
-                break;
-            }
-            atual = atual->proximo;
-        }
+    if (digitar == palavra) {
+        cout << "Parabéns! Você acertou!" << endl;
+        pontos++;
+    } else {
+        cout << "Palavra incorreta! A palavra certa era: " << palavra << endl;
     }
 
+    cout << "Pontos atuais: " << pontos << endl;
 }
 
 void embaralhar(TLista &lista, int num, string &palavra) {
     Apontador atual = lista.primeiro->proximo;
-
-    while (atual != nullptr) {
+    while (atual != NULL) {
         if (atual->item.numero == num) {
             palavra = atual->item.palavra;
-            std::random_device rd;
-            std::mt19937 g(rd());
-            std::shuffle(palavra.begin(), palavra.end(), g);
-            break;
+            string embaralhada = palavra;
+
+            // Embaralhando a palavra
+            random_device rd;
+            mt19937 g(rd());
+            shuffle(embaralhada.begin(), embaralhada.end(), g);
+
+            cout << "A palavra embaralhada é: " << embaralhada << endl;
+            return;
         }
         atual = atual->proximo;
     }
 
-}
-void alfabetoPortu(TLista &lista) {
-    Tinfo item;
-
-    ifstream arq("dicionario.txt");
-
-    int contador = 0;
-    string palavra;
-    if (arq.is_open()) {
-        while (getline(arq, palavra)) {
-            item.palavra = palavra;
-            item.numero = contador;
-            insereFinal(lista, item);
-            contador++;
-        }
-        arq.close();
-    } else {
-        cout << "Arquivo nao encontrado." << endl;
-    }
-}
-
-void alfabetoIngles(TLista &lista) {
-    Tinfo item;
-    string palavra;
-
-    ifstream arq("ingles.txt");
-
-    int contador = 0;
-    if (arq.is_open()) {
-        while (getline(arq, palavra)) {
-            item.palavra = palavra;
-            item.numero = contador;
-            insereFinal(lista, item);
-            contador++;
-        }
-        arq.close();
-    } else {
-        cout << "Arquivo nao encontrado." << endl;
-    }
+    cout << "Número não encontrado na lista!" << endl;
 }
 
 void insereFinal(TLista &lista, Tinfo item) {
-    Apontador novoNodo = new NodoLista;
-    novoNodo->item = item;
-    novoNodo->proximo = NULL;
-    lista.ultimo->proximo = novoNodo;
-    lista.ultimo = novoNodo;
+    Apontador novo = new NodoLista;
+    novo->item = item;
+    novo->proximo = NULL;
+    lista.ultimo->proximo = novo;
+    lista.ultimo = novo;
 }
 
 void imprimeLista(TLista lista) {
-    Apontador nodo = lista.primeiro->proximo;
-    while (nodo != NULL) {
-        cout << nodo->item.palavra << " - " << nodo->item.numero << endl;
-        nodo = nodo->proximo;
+    Apontador atual = lista.primeiro->proximo;
+    while (atual != NULL) {
+        cout << "Número: " << atual->item.numero << " Palavra: " << atual->item.palavra << endl;
+        atual = atual->proximo;
     }
+}
+
+void alfabetoPortu(TLista &lista) {
+    ifstream arquivo("dicionario.txt");
+    if (!arquivo.is_open()) {
+        cout << "Erro ao abrir o arquivo de palavras em português!" << endl;
+        return;
+    }
+
+    Tinfo item;
+    while (arquivo >> item.numero >> item.palavra) {
+        insereFinal(lista, item);
+    }
+
+    arquivo.close();
+}
+
+void alfabetoIngles(TLista &lista) {
+    ifstream arquivo("ingles.txt");
+    if (!arquivo.is_open()) {
+        cout << "Erro ao abrir o arquivo de palavras em inglês!" << endl;
+        return;
+    }
+
+    Tinfo item;
+    while (arquivo >> item.numero >> item.palavra) {
+        insereFinal(lista, item);
+    }
+
+    arquivo.close();
 }
